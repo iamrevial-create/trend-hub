@@ -1,0 +1,12 @@
+{
+  "name": "trend-hub",
+  "version": "1.0.0",
+  "description": "E-commerce store for Trend Hub",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
