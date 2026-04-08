@@ -3,16 +3,28 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(express.static('public'));
 
-// 1. PRODUCT DATABASE
+// 1. MEGA PRODUCT DATABASE (Fashion, Electronics, Home Appliances, Accessories)
 const products = [
-    { id: 1, name: "Nike Air Max", price: 25000, desc: "Original Nike running shoes.", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400" },
-    { id: 2, name: "Apple Watch 9", price: 450000, desc: "Series 9 with health sensors.", img: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=400" },
-    { id: 3, name: "Sony XM5", price: 320000, desc: "Top-tier noise cancellation.", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400" },
-    { id: 4, name: "Galaxy S24", price: 1200000, desc: "Titanium build with AI.", img: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400" },
-    { id: 5, name: "Leather Jacket", price: 55000, desc: "Genuine black leather.", img: "https://images.unsplash.com/photo-1551028711-031c1f062497?w=400" },
-    { id: 6, name: "Coffee Table", price: 75000, desc: "Minimalist oak wood.", img: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=400" }
+    // --- FASHION & SHOES ---
+    { id: 1, name: "Nike Air Max 270", price: 85000, cat: "Fashion", desc: "Premium comfort and athletic style.", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400" },
+    { id: 2, name: "Designer Leather Tote", price: 45000, cat: "Fashion", desc: "Genuine Italian leather handbag.", img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400" },
+    { id: 3, name: "Classic Timberland Boots", price: 95000, cat: "Fashion", desc: "Waterproof durability for any weather.", img: "https://images.unsplash.com/photo-1520639889456-749444397334?w=400" },
+    { id: 4, name: "Silk Evening Gown", price: 35000, cat: "Fashion", desc: "Elegant fit for special occasions.", img: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400" },
+
+    // --- ELECTRONICS ---
+    { id: 5, name: "iPhone 15 Pro Max", price: 1850000, cat: "Tech", desc: "Titanium design, A17 Pro chip.", img: "https://images.unsplash.com/photo-1695048133142-1a20484d256e?w=400" },
+    { id: 6, name: "MacBook Pro M3", price: 2400000, cat: "Tech", desc: "The most advanced chip in a laptop.", img: "https://images.unsplash.com/photo-1517336714460-4c504974f231?w=400" },
+    { id: 7, name: "Sony WH-1000XM5", price: 350000, cat: "Tech", desc: "Industry-leading noise cancellation.", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400" },
+
+    // --- HOME APPLIANCES ---
+    { id: 8, name: "Smart Air Fryer (5L)", price: 85000, cat: "Home", desc: "Healthy cooking with touch controls.", img: "https://images.unsplash.com/photo-1626074353765-517a681e40be?w=400" },
+    { id: 9, name: "Nespresso Coffee Maker", price: 120000, cat: "Home", desc: "Barista-quality coffee at home.", img: "https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?w=400" },
+    { id: 10, name: "Robot Vacuum Cleaner", price: 210000, cat: "Home", desc: "Automatic cleaning with laser mapping.", img: "https://images.unsplash.com/photo-1589923158776-cb4485d99fd6?w=400" },
+
+    // --- VALUABLE ACCESSORIES ---
+    { id: 11, name: "Gold Plated Watch", price: 150000, cat: "Luxury", desc: "Luxury timepiece for any outfit.", img: "https://images.unsplash.com/photo-1524592093055-3a3179246f41?w=400" },
+    { id: 12, name: "Ray-Ban Aviators", price: 75000, cat: "Luxury", desc: "Iconic sunglasses with UV protection.", img: "https://images.unsplash.com/photo-1511499767390-a73359580bc1?w=400" }
 ];
 
 app.get('/', (req, res) => {
@@ -21,126 +33,145 @@ app.get('/', (req, res) => {
     <html lang="en">
     <head>
         <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Trend Hub | Premium Store</title>
+        <title>Trend Hub | All-In-One Store</title>
         <script src="https://js.paystack.co/v2/inline.js"></script>
         <style>
-            body { font-family: sans-serif; margin: 0; background: #f4f4f4; }
-            header { background: #000; color: #fff; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-            .auth-box { background: white; padding: 20px; border-radius: 8px; max-width: 400px; margin: 20px auto; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-            .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; padding: 5%; }
-            .card { background: white; padding: 15px; border-radius: 10px; text-align: center; cursor: pointer; transition: 0.3s; }
+            body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f0f2f5; }
+            header { background: #1a1a1a; color: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+            .auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 2000; }
+            .auth-card { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; }
+            .nav-tabs { display: flex; overflow-x: auto; background: white; padding: 10px 5%; border-bottom: 1px solid #ddd; }
+            .tab { padding: 8px 20px; margin-right: 10px; background: #eee; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 14px; }
+            .tab.active { background: #000; color: white; }
+            .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; padding: 20px 5%; }
+            .card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: 0.3s; cursor: pointer; }
             .card:hover { transform: translateY(-5px); }
-            .card img { width: 100%; height: 200px; object-fit: cover; border-radius: 5px; }
-            #sidebar { display: none; position: fixed; right: 0; top: 0; width: 350px; height: 100%; background: white; box-shadow: -5px 0 15px rgba(0,0,0,0.2); z-index: 1000; padding: 20px; overflow-y: auto; }
-            input { width: 100%; padding: 10px; margin: 5px 0 15px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-            .btn { width: 100%; padding: 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-            .add-btn { background: #000; color: white; }
-            .pay-btn { background: #28a745; color: white; }
+            .card img { width: 100%; height: 200px; object-fit: cover; }
+            .info { padding: 15px; }
+            .price { font-size: 18px; color: #e44d26; font-weight: bold; }
+            #sidebar { display: none; position: fixed; right: 0; top: 0; width: 350px; height: 100%; background: white; z-index: 1500; padding: 25px; box-shadow: -5px 0 20px rgba(0,0,0,0.3); overflow-y: auto; }
+            input, select { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; }
+            .btn { width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+            .buy-btn { background: #000; color: white; margin-top: 10px; }
+            .pay-btn { background: #28a745; color: white; font-size: 18px; }
             .hidden { display: none; }
         </style>
     </head>
     <body>
 
-        <header>
-            <h2>TREND HUB</h2>
-            <div id="nav-btns">
-                <button onclick="showAuth()" id="auth-nav" style="background:none; border:1px solid white; color:white; padding:5px 10px; cursor:pointer;">Login / Signup</button>
-                <button onclick="toggleCart()" style="background:#e44d26; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; margin-left:10px;">🛒 Cart (<span id="count">0</span>)</button>
+        <div id="auth-gate" class="auth-overlay">
+            <div class="auth-card">
+                <h2 id="gate-title">Welcome to Trend Hub</h2>
+                <p>Sign up to start shopping</p>
+                <input type="email" id="u-email" placeholder="Email Address">
+                <input type="password" id="u-pass" placeholder="Password">
+                <button class="btn buy-btn" onclick="login()">Enter Store</button>
             </div>
+        </div>
+
+        <header>
+            <h1 style="margin:0; letter-spacing:1px;">TREND HUB</h1>
+            <button onclick="toggleCart()" style="background:#e44d26; color:white; border:none; padding:10px 20px; border-radius:30px; cursor:pointer;">
+                🛒 Cart (<span id="cart-count">0</span>)
+            </button>
         </header>
 
-        <div id="auth-section" class="auth-box">
-            <h3 id="auth-title">Create Account</h3>
-            <input type="email" id="auth-email" placeholder="Email Address">
-            <input type="password" id="auth-pass" placeholder="Password">
-            <button class="btn add-btn" onclick="handleAuth()">Submit</button>
-            <p style="font-size: 0.8em; color: blue; cursor: pointer;" onclick="toggleAuthType()" id="auth-toggle">Already have an account? Login</p>
+        <div class="nav-tabs">
+            <div class="tab active" onclick="filter('All')">All Products</div>
+            <div class="tab" onclick="filter('Fashion')">Fashion & Bags</div>
+            <div class="tab" onclick="filter('Tech')">Electronics</div>
+            <div class="tab" onclick="filter('Home')">Appliances</div>
+            <div class="tab" onclick="filter('Luxury')">Valuables</div>
         </div>
 
-        <div id="store-section" class="hidden">
-            <div class="grid">
-                ${products.map(p => `
-                    <div class="card" onclick="viewDetails('${p.name}', '${p.desc}', ${p.price})">
-                        <img src="${p.img}">
-                        <h3>${p.name}</h3>
-                        <p style="color:#e44d26; font-weight:bold;">₦${p.price.toLocaleString()}</p>
-                        <button class="btn add-btn" onclick="event.stopPropagation(); addToCart('${p.name}', ${p.price})">Add to Cart</button>
-                    </div>
-                `).join('')}
+        <div class="grid" id="product-grid">
             </div>
-        </div>
 
         <div id="sidebar">
-            <h3>Your Cart <span style="float:right; cursor:pointer" onclick="toggleCart()">×</span></h3>
-            <div id="cart-list"></div>
-            <p><strong>Total: ₦<span id="total">0</span></strong></p>
+            <h2>Your Order <span style="float:right; cursor:pointer" onclick="toggleCart()">×</span></h2>
+            <div id="cart-items" style="margin: 20px 0;"></div>
+            <p style="font-size: 20px;"><strong>Total: ₦<span id="cart-total">0</span></strong></p>
             <hr>
-            <h4>Shipping Info</h4>
-            <input type="text" id="ship-name" placeholder="Full Name">
-            <input type="text" id="ship-addr" placeholder="Delivery Address">
-            <input type="tel" id="ship-phone" placeholder="WhatsApp Phone">
-            <button class="btn pay-btn" onclick="startPayment()">Pay & Order via WhatsApp</button>
+            <h3>Checkout Details</h3>
+            <input type="text" id="order-name" placeholder="Receiver Name">
+            <input type="text" id="order-addr" placeholder="Delivery Address">
+            <input type="tel" id="order-phone" placeholder="WhatsApp Phone Number">
+            <button class="btn pay-btn" onclick="checkout()">Proceed to Payment</button>
         </div>
 
         <script>
+            const db = ${JSON.stringify(products)};
             let cart = [];
-            let isLogin = false;
-            const MY_PHONE = "2348087364507"; // REPLACE WITH YOUR NUMBER
+            let currentEmail = "";
+            const MY_WA = "2348000000000"; // REPLACE WITH YOUR NUMBER
 
-            function toggleAuthType() {
-                isLogin = !isLogin;
-                document.getElementById('auth-title').innerText = isLogin ? "Login" : "Create Account";
-                document.getElementById('auth-toggle').innerText = isLogin ? "Need an account? Signup" : "Already have an account? Login";
+            function login() {
+                const em = document.getElementById('u-email').value;
+                if(!em.includes('@')) return alert("Please enter a valid email");
+                currentEmail = em;
+                document.getElementById('auth-gate').classList.add('hidden');
+                renderProducts('All');
             }
 
-            function handleAuth() {
-                const email = document.getElementById('auth-email').value;
-                if(!email) return alert("Enter email");
-                document.getElementById('auth-section').classList.add('hidden');
-                document.getElementById('store-section').classList.remove('hidden');
-                document.getElementById('auth-nav').innerText = "Account: " + email.split('@')[0];
+            function renderProducts(cat) {
+                const grid = document.getElementById('product-grid');
+                const filtered = cat === 'All' ? db : db.filter(p => p.cat === cat);
+                grid.innerHTML = filtered.map(p => \`
+                    <div class="card" onclick="alert('\${p.name}\\n\\n\${p.desc}')">
+                        <img src="\${p.img}">
+                        <div class="info">
+                            <h4>\${p.name}</h4>
+                            <div class="price">₦\${p.price.toLocaleString()}</div>
+                            <button class="btn buy-btn" onclick="event.stopPropagation(); addToCart(\${p.id})">Add to Cart</button>
+                        </div>
+                    </div>
+                \`).join('');
             }
 
-            function viewDetails(name, desc, price) {
-                alert(name + "\\n\\n" + desc + "\\n\\nPrice: ₦" + price.toLocaleString());
+            function filter(cat) {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                event.target.classList.add('active');
+                renderProducts(cat);
             }
 
-            function addToCart(name, price) {
-                cart.push({name, price});
-                updateCartUI();
+            function addToCart(id) {
+                const item = db.find(p => p.id === id);
+                cart.push(item);
+                updateUI();
+                if(cart.length === 1) toggleCart();
             }
 
-            function updateCartUI() {
-                document.getElementById('count').innerText = cart.length;
-                const total = cart.reduce((sum, item) => sum + item.price, 0);
-                document.getElementById('total').innerText = total.toLocaleString();
-                document.getElementById('cart-list').innerHTML = cart.map(i => \`<p>\${i.name} - ₦\${i.price.toLocaleString()}</p>\`).join('');
+            function updateUI() {
+                document.getElementById('cart-count').innerText = cart.length;
+                const list = document.getElementById('cart-items');
+                list.innerHTML = cart.map(i => \`<p style="display:flex; justify-content:space-between;"><span>\${i.name}</span> <span>₦\${i.price.toLocaleString()}</span></p>\`).join('');
+                const total = cart.reduce((s, i) => s + i.price, 0);
+                document.getElementById('cart-total').innerText = total.toLocaleString();
             }
 
             function toggleCart() {
                 const s = document.getElementById('sidebar');
-                s.style.display = (s.style.display === 'block') ? 'none' : 'block';
+                s.style.display = s.style.display === 'block' ? 'none' : 'block';
             }
 
-            function startPayment() {
-                const name = document.getElementById('ship-name').value;
-                const addr = document.getElementById('ship-addr').value;
-                const phone = document.getElementById('ship-phone').value;
-                const email = document.getElementById('auth-email').value;
-                const total = cart.reduce((sum, item) => sum + item.price, 0);
+            function checkout() {
+                const name = document.getElementById('order-name').value;
+                const addr = document.getElementById('order-addr').value;
+                const phone = document.getElementById('order-phone').value;
+                const total = cart.reduce((s, i) => s + i.price, 0);
 
-                if(!name || !addr || !phone) return alert("Fill delivery info");
+                if(!name || !addr || !phone) return alert("Fill delivery info!");
 
                 const handler = new PaystackPop();
                 handler.newTransaction({
                     key: 'pk_test_3899324fac7b348ffd8250cddc24b4',
-                    email: email,
+                    email: currentEmail,
                     amount: total * 100,
                     onSuccess: (res) => {
                         const items = cart.map(c => "- " + c.name).join('%0A');
-                        const msg = \`*NEW ORDER*%0A\${items}%0A%0A*Total:* ₦\${total}%0A*Customer:* \${name}%0A*Address:* \${addr}%0A*Phone:* \${phone}\`;
-                        window.open(\`https://wa.me/\${MY_PHONE}?text=\${msg}\`);
-                        alert("Payment Success!");
+                        const msg = \`*TREND HUB ORDER*%0A\${items}%0A%0A*Total:* ₦\${total}%0A*Customer:* \${name}%0A*Address:* \${addr}%0A*Phone:* \${phone}\`;
+                        window.open(\`https://wa.me/\${MY_WA}?text=\${msg}\`);
+                        alert("Payment Received! Check WhatsApp for confirmation.");
                         location.reload();
                     }
                 });
@@ -151,4 +182,4 @@ app.get('/', (req, res) => {
     `);
 });
 
-app.listen(PORT, () => console.log("Trend Hub is Live on Port " + PORT));
+app.listen(PORT, () => console.log("Trend Hub Mega-Store is Live!"));
