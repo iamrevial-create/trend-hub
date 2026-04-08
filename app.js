@@ -85,7 +85,7 @@ app.get('/', (req, res) => {
         <script>
             let cart = [];
             let isLogin = false;
-            const MY_PHONE = "2348000000000"; // REPLACE WITH YOUR NUMBER
+            const MY_PHONE = "2348087364507"; // REPLACE WITH YOUR NUMBER
 
             function toggleAuthType() {
                 isLogin = !isLogin;
